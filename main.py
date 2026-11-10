@@ -1,6 +1,5 @@
-from getpass import getpass
 from typing import Any
-
+import os
 import psycopg
 
 from etl.create_summary import load_summary
@@ -17,14 +16,12 @@ def run_pipeline(conn: Any) -> dict[str, Any]:
 
 
 def _connection() -> psycopg.Connection:
-    """Create the single PostgreSQL connection used by the pipeline."""
-    password = getpass("Enter your PostgreSQL password: ")
     return psycopg.connect(
-        host="localhost",
-        port=5432,
-        dbname="delivery_db",
-        user="postgres",
-        password=password,
+        host=os.getenv("POSTGRES_HOST"),
+        port=os.getenv("POSTGRES_PORT"),
+        dbname=os.getenv("POSTGRES_DB"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD"),
     )
 
 
@@ -36,10 +33,11 @@ def main() -> None:
 
     print(
         "Pipeline completed: "
-        f"{summary['nbr_commandes']} orders, "
+        f"{summary['nb_orders']} orders, "
         f"total={summary['somme']}, average={summary['moyenne']}"
     )
 
 
 if __name__ == "__main__":
     main()
+    

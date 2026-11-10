@@ -3,7 +3,6 @@ from typing import Sequence
 
 
 def transform_orders(orders: Sequence[tuple]) -> dict[str, Decimal | int]:
-    """Compute the summary without opening a database connection."""
     nb_orders = len(orders)
     somme = Decimal(0)
 
@@ -12,7 +11,7 @@ def transform_orders(orders: Sequence[tuple]) -> dict[str, Decimal | int]:
 
     moyenne = somme / nb_orders if nb_orders > 0 else Decimal(0)   
     return {
-        "nbr_commandes": nb_orders,
+        "nb_orders": nb_orders,
         "somme": somme,
         "moyenne": moyenne,
     }
