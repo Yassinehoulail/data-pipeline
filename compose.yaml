@@ -4,6 +4,7 @@ services:
     image: postgres:18
     ports:
       - "5433:5432"
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ton_mot_de_passe
@@ -29,3 +30,28 @@ services:
       POSTGRES_DB: delivery_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ton_mot_de_passe
+
+  airflow:
+    container_name: delivery-airflow
+
+    build:
+      context: .
+      dockerfile: dockerfile.airflow
+
+    image: delivery-airflow:local
+    command: standalone
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - .:/opt/airflow/project:ro
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      PYTHONPATH: "/opt/airflow/project"
+      AIRFLOW_CONN_DELIVERY_POSTGRES: >-
+        {"conn_type":"postgres","host":"postgres","port":5432,
+        "schema":"delivery_db","login":"postgres","password":"ton_mot_de_passe"}
+     
